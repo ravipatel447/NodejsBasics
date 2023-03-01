@@ -1,6 +1,19 @@
-const request = require("request");
-const url =
-  "http://api.weatherstack.com/current?access_key=57a7876a5110b1f536df7149146d3dac&query=Ahmedabad";
-request({ url, json: true }, (err, res) => {
-  console.log(res.body.current.temperature);
+const geocode = require("./utils/geocode");
+const weatherStack = require("./utils/weatherStack");
+const express = require("express");
+const app = express();
+
+geocode("ahmedabad", (error, { longitude, lattitude, places }) => {
+  console.log(longitude, lattitude, places);
+  weatherStack(
+    lattitude,
+    longitude,
+    (error, { temperature, feel_like, name_, region, country }) => {
+      console.log(`we are currently in ${places}, and temprature is ${temperature} and it feel's like
+      ${feel_like} and name is ${name_} region is ${region} and country is ${country}`);
+    }
+  );
+});
+app.listen(3000, () => {
+  console.log("we are succesfullu running our app on 3000");
 });
